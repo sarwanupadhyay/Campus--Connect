@@ -1,0 +1,314 @@
+{% extends "layout.html" %}
+
+{% block title %}Resume Builder - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <img src="{{ url_for('static', filename='img/campus--connect.png') }}" alt="Campus Connect Logo" class="h-10">
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_profile') }}" class="sidebar-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resume Builder</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="flex-1 p-0">
+        <div class="container mx-auto">
+            <header class="flex justify-between items-center py-4 px-6 bg-white shadow-sm rounded-lg mb-4 mt-4">
+                <h1 class="text-2xl font-bold text-gray-800">Resume Builder</h1>
+                <div class="flex space-x-3">
+                    <button id="previewBtn" class="btn btn-outline"><i class="fas fa-eye"></i> Preview</button>
+                    <button id="downloadResumeBtn" class="btn btn-primary"><i class="fas fa-download"></i> Download PDF</button>
+                </div>
+            </header>
+
+            <div class="main-content flex flex-col md:flex-row gap-6">
+                <div class="editor-section bg-white p-6 rounded-lg shadow-sm flex-1">
+                    <form id="resumeForm">
+                        <!-- Personal Information -->
+                        <div class="form-section mb-6">
+                            <h2 class="text-xl font-semibold mb-4 text-gray-700">Personal Information</h2>
+                            <div class="form-group mb-4">
+                                <label for="fullName" class="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                                <input type="text" id="fullName" name="fullName" class="form-control" placeholder="e.g. Saurabh Kumar">
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="form-group">
+                                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                    <input type="email" id="email" name="email" class="form-control" placeholder="e.g. saurabh@example.com">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                    <input type="tel" id="phone" name="phone" class="form-control" placeholder="e.g. 123-456-7890">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                <div class="form-group">
+                                    <label for="location" class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                    <input type="text" id="location" name="location" class="form-control" placeholder="e.g. Haldwani, Uttrakhand, IN">
+                                </div>
+                                <div class="form-group">
+                                    <label for="website" class="block text-sm font-medium text-gray-700 mb-1">Website/Portfolio</label>
+                                    <input type="url" id="website" name="website" class="form-control" placeholder="e.g. https://yourportfolio.com">
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="summary" class="block text-sm font-medium text-gray-700 mb-1">Professional Summary</label>
+                                <textarea id="summary" name="summary" class="form-control" rows="3" placeholder="Brief overview of your skills and career goals"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Education Section -->
+                        <div class="form-section mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-700">Education</h2>
+                                <button type="button" id="addEducation" class="btn-add text-sm"><i class="fas fa-plus"></i> Add</button>
+                            </div>
+                            <div id="educationContainer">
+                                <div class="education-entry bg-gray-50 p-4 rounded-md mb-4">
+                                    <div class="form-group mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Institution</label>
+                                        <input type="text" name="edu-institution[]" class="form-control" placeholder="e.g. University of Delhi">
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Degree</label>
+                                            <input type="text" name="edu-degree[]" class="form-control" placeholder="e.g. Bachelor of Science">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Field of Study</label>
+                                            <input type="text" name="edu-field[]" class="form-control" placeholder="e.g. Computer Science">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                            <input type="text" name="edu-location[]" class="form-control" placeholder="e.g. Uttrakhand, IN">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                                            <input type="text" name="edu-dates[]" class="form-control" placeholder="e.g. Aug 2024 - May 2026">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-remove text-sm text-red-600"><i class="fas fa-trash"></i> Remove</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Experience Section -->
+                        <div class="form-section mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-700">Experience</h2>
+                                <button type="button" id="addExperience" class="btn-add text-sm"><i class="fas fa-plus"></i> Add</button>
+                            </div>
+                            <div id="experienceContainer">
+                                <div class="experience-entry bg-gray-50 p-4 rounded-md mb-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Job Title</label>
+                                            <input type="text" name="exp-title[]" class="form-control" placeholder="e.g. Software Engineer">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Company</label>
+                                            <input type="text" name="exp-company[]" class="form-control" placeholder="e.g. Tech Solutions Inc.">
+                                        </div>
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                                            <input type="text" name="exp-location[]" class="form-control" placeholder="e.g. San Francisco, CA">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Date Range</label>
+                                            <input type="text" name="exp-dates[]" class="form-control" placeholder="e.g. June 2020 - Present">
+                                        </div>
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Responsibilities & Achievements</label>
+                                        <textarea name="exp-description[]" class="form-control" rows="3" placeholder="Describe your key responsibilities and achievements"></textarea>
+                                    </div>
+                                    <button type="button" class="btn-remove text-sm text-red-600"><i class="fas fa-trash"></i> Remove</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Skills Section -->
+                        <div class="form-section mb-6">
+                            <h2 class="text-xl font-semibold mb-4 text-gray-700">Skills</h2>
+                            <div class="form-group">
+                                <label for="skills" class="block text-sm font-medium text-gray-700 mb-1">Skills (comma separated)</label>
+                                <textarea id="skills" name="skills" class="form-control" rows="2" placeholder="e.g. JavaScript, Python, Project Management, Communication"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Certifications Section -->
+                        <div class="form-section mb-6">
+                            <div class="flex justify-between items-center mb-4">
+                                <h2 class="text-xl font-semibold text-gray-700">Certifications</h2>
+                                <button type="button" id="addCertification" class="btn-add text-sm"><i class="fas fa-plus"></i> Add</button>
+                            </div>
+                            <div id="certificationContainer">
+                                <div class="certification-entry bg-gray-50 p-4 rounded-md mb-4">
+                                    <div class="form-group mb-4">
+                                        <label class="block text-sm font-medium text-gray-700 mb-1">Certification Name</label>
+                                        <input type="text" name="cert-name[]" class="form-control" placeholder="e.g. AWS Certified Solutions Architect">
+                                    </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Issuing Organization</label>
+                                            <input type="text" name="cert-org[]" class="form-control" placeholder="e.g. Amazon Web Services">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+                                            <input type="text" name="cert-date[]" class="form-control" placeholder="e.g. May 2021">
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn-remove text-sm text-red-600"><i class="fas fa-trash"></i> Remove</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-actions flex justify-between">
+                            <button type="button" id="clearForm" class="btn btn-outline"><i class="fas fa-trash"></i> Clear Form</button>
+                            <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Save Resume</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="preview-section hidden md:block bg-white p-6 rounded-lg shadow-sm w-full md:w-1/2" id="previewSection">
+                    <div class="preview-container">
+                        <div class="resume-header text-center mb-6">
+                            <h1 id="previewName" class="text-2xl font-bold mb-2">Your Name</h1>
+                            <div class="contact-info text-sm text-gray-600">
+                                <span id="previewEmail">email@example.com</span> | 
+                                <span id="previewPhone">123-456-7890</span> | 
+                                <span id="previewLocation">City, State</span>
+                                <div id="previewWebsiteContainer" class="mt-1">
+                                    <span id="previewWebsite">yourwebsite.com</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resume-section mb-5">
+                            <h2 class="text-lg font-semibold border-b pb-1 mb-3 text-gray-700">Summary</h2>
+                            <div class="section-content">
+                                <p id="previewSummary" class="text-sm">Professional summary will appear here...</p>
+                            </div>
+                        </div>
+
+                        <div class="resume-section mb-5">
+                            <h2 class="text-lg font-semibold border-b pb-1 mb-3 text-gray-700">Education</h2>
+                            <div class="section-content" id="previewEducation">
+                                <div class="education-item mb-3">
+                                    <div class="item-header flex justify-between">
+                                        <span class="item-title font-medium">University Name</span>
+                                        <span class="item-date text-sm text-gray-600">Date Range</span>
+                                    </div>
+                                    <div class="item-subheader flex justify-between text-sm">
+                                        <span class="item-subtitle">Degree in Field of Study</span>
+                                        <span class="item-location text-gray-600">Location</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resume-section mb-5">
+                            <h2 class="text-lg font-semibold border-b pb-1 mb-3 text-gray-700">Experience</h2>
+                            <div class="section-content" id="previewExperience">
+                                <div class="experience-item mb-3">
+                                    <div class="item-header flex justify-between">
+                                        <span class="item-title font-medium">Job Title, Company</span>
+                                        <span class="item-date text-sm text-gray-600">Date Range</span>
+                                    </div>
+                                    <div class="item-subheader mb-1">
+                                        <span class="item-location text-sm text-gray-600">Location</span>
+                                    </div>
+                                    <div class="item-description">
+                                        <p class="text-sm">Job description will appear here...</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resume-section mb-5">
+                            <h2 class="text-lg font-semibold border-b pb-1 mb-3 text-gray-700">Skills</h2>
+                            <div class="section-content">
+                                <div class="skills-container flex flex-wrap gap-2" id="previewSkills">
+                                    <span class="skill-tag px-2 py-1 bg-gray-100 rounded text-xs">Skill 1</span>
+                                    <span class="skill-tag px-2 py-1 bg-gray-100 rounded text-xs">Skill 2</span>
+                                    <span class="skill-tag px-2 py-1 bg-gray-100 rounded text-xs">Skill 3</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="resume-section" id="certificationsSection">
+                            <h2 class="text-lg font-semibold border-b pb-1 mb-3 text-gray-700">Certifications</h2>
+                            <div class="section-content" id="previewCertifications">
+                                <div class="certification-item mb-3">
+                                    <div class="item-header flex justify-between">
+                                        <span class="item-title font-medium">Certification Name</span>
+                                        <span class="item-date text-sm text-gray-600">Date</span>
+                                    </div>
+                                    <div class="item-subheader">
+                                        <span class="item-subtitle text-sm">Issuing Organization</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% block extra_js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<!-- <script src="{{ url_for('static', filename='js/resume.js') }}"></script> -->
+{% endblock %}
+{% endblock %}

@@ -1,0 +1,262 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Campus Dashboard - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item active">
+                    <a href="{{ url_for('campus_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-university"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-calendar"></i>
+                        <span>Events</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-users"></i>
+                        <span>Students</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-chart-bar"></i>
+                        <span>Analytics</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between gap-4 z-10">
+            <div class="flex gap-3 items-center lg:hidden">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+            
+            <div class="hidden sm:block">
+                <h1 class="text-lg font-semibold">State University Dashboard</h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button class="btn-icon btn-ghost relative">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge"></span>
+                </button>
+                <button class="btn-icon btn-ghost rounded-full overflow-hidden">
+                    <div class="w-full h-full bg-primary-orange/20 flex items-center justify-center">
+                        <i class="fas fa-school text-primary-orange"></i>
+                    </div>
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard content -->
+        <div class="p-4 lg:p-6">
+            <h1 class="text-2xl font-semibold mb-6">Campus Dashboard</h1>
+
+            <!-- Stats cards -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                <div class="card">
+                    <div class="card-body p-4 flex gap-4 items-center">
+                        <div class="bg-primary-light/50 p-3 rounded-full">
+                            <i class="fas fa-users text-primary-orange"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted">Registered Students</p>
+                            <p class="font-medium text-2xl">245</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-4 flex gap-4 items-center">
+                        <div class="bg-primary-light/50 p-3 rounded-full">
+                            <i class="fas fa-calendar text-primary-orange"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted">Active Events</p>
+                            <p class="font-medium text-2xl">6</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-4 flex gap-4 items-center">
+                        <div class="bg-primary-light/50 p-3 rounded-full">
+                            <i class="fas fa-users text-primary-orange"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted">Profile Views</p>
+                            <p class="font-medium text-2xl">1,248</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-body p-4 flex gap-4 items-center">
+                        <div class="bg-primary-light/50 p-3 rounded-full">
+                            <i class="fas fa-calendar text-primary-orange"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-muted">Event Registrations</p>
+                            <p class="font-medium text-2xl">358</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Campus profile section -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div class="lg:col-span-1">
+                    <div class="card">
+                        <div class="aspect-video w-full bg-gray-100 relative">
+                            <img 
+                                src="https://source.unsplash.com/random/800x400?university"
+                                alt="Campus"
+                                class="w-full h-full object-cover"
+                            >
+                            <button 
+                                class="btn-icon btn-secondary absolute top-2 right-2 bg-white/80 hover:bg-white"
+                            >
+                                <i class="fas fa-edit"></i>
+                            </button>
+                        </div>
+                        <div class="card-body p-4 text-center">
+                            <h2 class="text-xl font-semibold">State University</h2>
+                            <p class="text-sm text-muted my-1">Est. 1965</p>
+                            <div class="flex justify-center gap-2 mt-3">
+                                <button class="btn btn-sm btn-outline">Edit Profile</button>
+                                <button class="btn btn-sm btn-primary">View Public Profile</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="lg:col-span-2">
+                    <div class="card h-full">
+                        <div class="card-header">
+                            <h2 class="card-title">Campus Details</h2>
+                        </div>
+                        <div class="card-body">
+                            <div class="space-y-4">
+                                <div>
+                                    <h3 class="text-sm font-medium text-muted">About</h3>
+                                    <p class="mt-1">State University is a premier educational institution offering a wide range of courses across multiple disciplines.</p>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-muted">Courses Offered</h3>
+                                    <div class="flex flex-wrap gap-2 mt-1">
+                                        <span class="badge badge-light">Computer Science</span>
+                                        <span class="badge badge-light">Business Administration</span>
+                                        <span class="badge badge-light">Electrical Engineering</span>
+                                        <span class="badge badge-light">Psychology</span>
+                                        <span class="badge badge-light">Medicine</span>
+                                        <span class="badge badge-light">Fine Arts</span>
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-muted">Website</h3>
+                                    <a href="#" class="text-primary-orange hover:underline">www.stateuniversity.edu</a>
+                                </div>
+                                <div>
+                                    <h3 class="text-sm font-medium text-muted">Location</h3>
+                                    <p>123 University Avenue, College Town, ST 12345</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Events section -->
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold">Your Events</h2>
+                <button class="btn btn-primary">
+                    <i class="fas fa-plus mr-2"></i>
+                    Create New Event
+                </button>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {% for event in events %}
+                <div class="card overflow-hidden">
+                    <div class="aspect-video w-full bg-gray-100 relative">
+                        <img 
+                            src="{{ event.image }}"
+                            alt="{{ event.title }}"
+                            class="w-full h-full object-cover"
+                        >
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-3">
+                            <div class="text-white">
+                                <span class="text-xs font-medium">
+                                    {{ event.status }}
+                                </span>
+                            </div>
+                        </div>
+                        <button 
+                            class="btn-icon btn-secondary absolute top-2 right-2 bg-white/80 hover:bg-white"
+                        >
+                            <i class="fas fa-edit"></i>
+                        </button>
+                    </div>
+                    <div class="card-body p-4">
+                        <h3 class="font-medium">{{ event.title }}</h3>
+                        <div class="flex items-center gap-1 text-sm text-muted my-1">
+                            <i class="fas fa-calendar"></i>
+                            <span>{{ event.date }}</span>
+                        </div>
+                        <div class="text-sm text-muted mt-1 mb-3 line-clamp-2">
+                            <p>{{ event.description }}</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button class="btn btn-sm btn-outline">Edit</button>
+                            <button class="btn btn-sm btn-primary">Manage</button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

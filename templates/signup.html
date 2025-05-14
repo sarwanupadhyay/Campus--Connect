@@ -1,0 +1,128 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Sign Up - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary-light/10 to-primary-light/20 p-4">
+    <a href="{{ url_for('index') }}" class="absolute top-8 left-8 flex items-center gap-2">
+        <i class="fas fa-school text-primary-orange"></i>
+        <span class="text-xl font-bold">Campus Connect</span>
+    </a>
+    
+    <div class="signup-container">
+        <div class="signup-header">
+            <h1 class="signup-title">Create an account</h1>
+            <p class="signup-subtitle">Join Campus Connect to get started</p>
+        </div>
+        
+        <div class="signup-form-container">
+            <form action="{{ url_for('signup') }}" method="POST" class="signup-form">
+                <div class="form-group">
+                    <label class="form-label">I am a:</label>
+                    <div class="role-options">
+                        <label class="role-option">
+                            <input type="radio" name="role" value="student" id="student" checked class="role-input">
+                            <span class="radio-indicator">
+                                <span class="radio-dot student-radio"></span>
+                            </span>
+                            <span class="role-label">
+                                <i class="fas fa-user icon"></i>
+                                Student
+                            </span>
+                        </label>
+                        <label class="role-option">
+                            <input type="radio" name="role" value="campus" id="campus" class="role-input">
+                            <span class="radio-indicator">
+                                <span class="radio-dot campus-radio"></span>
+                            </span>
+                            <span class="role-label">
+                                <i class="fas fa-school icon"></i>
+                                Campus
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email" class="form-label">Email</label>
+                    <input 
+                        id="email" 
+                        name="email"
+                        type="email" 
+                        placeholder="your@email.com"
+                        required 
+                        class="form-input"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="password" class="form-label">Password</label>
+                    <input 
+                        id="password" 
+                        name="password"
+                        type="password"
+                        required 
+                        class="form-input"
+                    >
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword" class="form-label">Confirm Password</label>
+                    <input 
+                        id="confirmPassword" 
+                        name="confirmPassword"
+                        type="password"
+                        required 
+                        class="form-input"
+                    >
+                </div>
+                
+                <div class="terms-notice">
+                    By signing up, you agree to our <a href="#" class="terms-link">Terms of Service</a> and <a href="#" class="terms-link">Privacy Policy</a>.
+                </div>
+                
+                <button type="submit" class="signup-button">
+                    Create Account
+                </button>
+            </form>
+        </div>
+        
+        <div class="signup-footer">
+            <div class="login-text">
+                Already have an account?
+                <a href="{{ url_for('login') }}" class="login-link">
+                    Sign in
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle radio buttons styling
+    const studentRadio = document.getElementById('student');
+    const campusRadio = document.getElementById('campus');
+    const studentRadioDot = document.querySelector('.student-radio');
+    const campusRadioDot = document.querySelector('.campus-radio');
+    
+    function updateRadioStyles() {
+        if (studentRadio.checked) {
+            studentRadioDot.classList.remove('hidden');
+            campusRadioDot.classList.add('hidden');
+        } else {
+            studentRadioDot.classList.add('hidden');
+            campusRadioDot.classList.remove('hidden');
+        }
+    }
+    
+    // Initialize
+    updateRadioStyles();
+    
+    // Update on change
+    studentRadio.addEventListener('change', updateRadioStyles);
+    campusRadio.addEventListener('change', updateRadioStyles);
+});
+</script>
+{% endblock %}

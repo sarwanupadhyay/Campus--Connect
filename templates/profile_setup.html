@@ -1,0 +1,148 @@
+{% extends "layout.html" %}
+
+{% block title %}Profile Setup - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <div class="content-wrapper">
+        <a href="{{ url_for('index') }}" class="header-logo">
+            <img src="{{ url_for('static', filename='img/campus--connect.png') }}" alt="Campus Connect Logo" class="h-10">
+            <span class="logo-text">Campus Connect</span>
+        </a>
+
+        <div class="profile-card">
+            <div class="profile-header">
+                <h1 class="profile-title">Complete Your Profile</h1>
+                <p class="profile-subtitle">Please provide your information to get started</p>
+            </div>
+
+            <div class="profile-form-container">
+                <form method="post" enctype="multipart/form-data" class="profile-form">
+                    {% if session.role == 'student' %}
+                        <!-- Student Profile Setup Form -->
+                        <div class="profile-image-section">
+                            <div class="profile-image-container">
+                                <div class="profile-image-preview" id="profile-image-preview">
+                                    <i class="fas fa-user profile-placeholder-icon"></i>
+                                </div>
+                                <label for="profile_image" class="image-upload-button">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                                <input type="file" id="profile_image" name="profile_image" accept="image/*" class="hidden-input" onchange="previewImage(this)">
+                            </div>
+                        </div>
+
+                        <div class="form-row two-column">
+                            <div class="form-group">
+                                <label for="first_name" class="form-label">First Name*</label>
+                                <input type="text" id="first_name" name="first_name" required class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="last_name" class="form-label">Last Name*</label>
+                                <input type="text" id="last_name" name="last_name" required class="form-input">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="bio" class="form-label">Bio</label>
+                            <textarea id="bio" name="bio" rows="4" class="form-textarea" placeholder="Tell us about yourself..."></textarea>
+                        </div>
+
+                        <div class="form-row two-column">
+                            <div class="form-group">
+                                <label for="university" class="form-label">University/College*</label>
+                                <input type="text" id="university" name="university" required class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="field_of_study" class="form-label">Field of Study*</label>
+                                <input type="text" id="field_of_study" name="field_of_study" required class="form-input">
+                            </div>
+                        </div>
+
+                        <div class="form-row two-column">
+                            <div class="form-group">
+                                <label for="graduation_year" class="form-label">Graduation Year*</label>
+                                <input type="number" id="graduation_year" name="graduation_year" min="2000" max="2030" required class="form-input">
+                            </div>
+                            <div class="form-group">
+                                <label for="location" class="form-label">Location</label>
+                                <input type="text" id="location" name="location" class="form-input" placeholder="City, Country">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="skills" class="form-label">Skills (comma separated)</label>
+                            <input type="text" id="skills" name="skills" class="form-input" placeholder="Python, Java, Web Development...">
+                        </div>
+
+                    {% else %}
+                        <!-- Campus Profile Setup Form -->
+                        <div class="profile-image-section">
+                            <div class="profile-image-container">
+                                <div class="profile-image-preview" id="profile-image-preview">
+                                    <i class="fas fa-university profile-placeholder-icon"></i>
+                                </div>
+                                <label for="profile_image" class="image-upload-button">
+                                    <i class="fas fa-camera"></i>
+                                </label>
+                                <input type="file" id="profile_image" name="profile_image" accept="image/*" class="hidden-input" onchange="previewImage(this)">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="name" class="form-label">Institution Name*</label>
+                            <input type="text" id="name" name="name" required class="form-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="description" class="form-label">Description*</label>
+                            <textarea id="description" name="description" rows="4" required class="form-textarea" placeholder="Tell us about your institution..."></textarea>
+                        </div>
+
+                        <div class="form-row two-column">
+                            <div class="form-group">
+                                <label for="location" class="form-label">Location*</label>
+                                <input type="text" id="location" name="location" required class="form-input" placeholder="City, Country">
+                            </div>
+                            <div class="form-group">
+                                <label for="founded_year" class="form-label">Founded Year</label>
+                                <input type="number" id="founded_year" name="founded_year" min="1000" max="2023" class="form-input">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="website" class="form-label">Website</label>
+                            <input type="url" id="website" name="website" class="form-input" placeholder="https://example.com">
+                        </div>
+                    {% endif %}
+
+                    <div class="form-actions">
+                        <button type="submit" class="submit-button">
+                            Complete Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function previewImage(input) {
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const previewDiv = document.getElementById('profile-image-preview');
+            // Clear the placeholder icon
+            previewDiv.innerHTML = '';
+            // Create and add the image element
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'w-full h-full object-cover rounded-full';
+            previewDiv.appendChild(img);
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+</script>
+{% endblock %}

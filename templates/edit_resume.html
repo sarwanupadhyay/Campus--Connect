@@ -1,0 +1,160 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Edit Resume - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_profile') }}" class="sidebar-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resume</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between gap-4 z-10">
+            <div class="flex gap-3 items-center lg:hidden">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+            
+            <div class="hidden sm:block">
+                <h1 class="text-lg font-semibold">Edit Resume</h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <a href="{{ url_for('resume_builder') }}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Resume
+                </a>
+            </div>
+        </header>
+
+        <!-- Edit Resume content -->
+        <div class="p-4 lg:p-6">
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="p-6">
+                        <h2 class="text-xl font-semibold mb-4">Edit Your Resume</h2>
+                        
+                        <form method="post" enctype="multipart/form-data" class="space-y-6">
+                            <!-- Personal Information Section -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium">Personal Information</h3>
+                                
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <div class="space-y-2">
+                                        <label for="phone" class="form-label">Phone Number</label>
+                                        <input type="tel" id="phone" name="phone" class="form-input" value="{{ student.phone if student.phone }}">
+                                    </div>
+                                    
+                                    <div class="space-y-2">
+                                        <label for="website" class="form-label">Personal Website</label>
+                                        <input type="url" id="website" name="website" class="form-input" value="{{ student.website if student.website }}">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Education Section -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium">Education</h3>
+                                
+                                <div class="space-y-2">
+                                    <label for="education" class="form-label">Education Details</label>
+                                    <textarea id="education" name="education" class="form-textarea h-32" placeholder="List your educational background">{{ student.education if student.education }}</textarea>
+                                    <p class="text-sm text-muted">Format: Degree, Institution, Year</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Work Experience Section -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium">Work Experience</h3>
+                                
+                                <div class="space-y-2">
+                                    <label for="experience" class="form-label">Experience Details</label>
+                                    <textarea id="experience" name="experience" class="form-textarea h-32" placeholder="List your work experience">{{ student.experience if student.experience }}</textarea>
+                                    <p class="text-sm text-muted">Format: Position, Company, Duration, Responsibilities</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Skills Section -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium">Skills</h3>
+                                
+                                <div class="space-y-2">
+                                    <label for="skills" class="form-label">Skills (comma-separated)</label>
+                                    <input type="text" id="skills" name="skills" class="form-input" value="{{ student.skills if student.skills }}">
+                                </div>
+                            </div>
+                            
+                            <!-- Certifications Section -->
+                            <div class="space-y-4">
+                                <h3 class="text-lg font-medium">Certifications</h3>
+                                
+                                <div class="space-y-2">
+                                    <label for="certifications" class="form-label">Certifications</label>
+                                    <textarea id="certifications" name="certifications" class="form-textarea h-32" placeholder="List your certifications">{{ student.certifications if student.certifications }}</textarea>
+                                    <p class="text-sm text-muted">Format: Certification Name, Issuing Organization, Date</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end space-x-3">
+                                <a href="{{ url_for('resume_builder') }}" class="btn btn-outline">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

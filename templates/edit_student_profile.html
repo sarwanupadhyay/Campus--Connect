@@ -1,0 +1,189 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Edit Profile - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="{{ url_for('student_profile') }}" class="sidebar-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resume Builder</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between gap-4 z-10">
+            <div class="flex gap-3 items-center lg:hidden">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+            
+            <div class="hidden sm:block">
+                <h1 class="text-lg font-semibold">Edit Profile</h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <a href="{{ url_for('student_profile') }}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Profile
+                </a>
+            </div>
+        </header>
+
+        <!-- Edit Profile content -->
+        <div class="p-4 lg:p-6">
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="p-6">
+                        <h2 class="text-xl font-semibold mb-4">Edit Your Profile</h2>
+                        
+                        <form method="post" enctype="multipart/form-data" class="space-y-6">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="first_name" class="form-label">First Name*</label>
+                                    <input type="text" id="first_name" name="first_name" class="form-input" value="{{ student.first_name }}" required>
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="last_name" class="form-label">Last Name*</label>
+                                    <input type="text" id="last_name" name="last_name" class="form-input" value="{{ student.last_name }}" required>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="bio" class="form-label">Bio</label>
+                                <textarea id="bio" name="bio" class="form-textarea h-24">{{ student.bio }}</textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="university" class="form-label">University/College*</label>
+                                    <input type="text" id="university" name="university" class="form-input" value="{{ student.university }}" required>
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="field_of_study" class="form-label">Field of Study*</label>
+                                    <input type="text" id="field_of_study" name="field_of_study" class="form-input" value="{{ student.field_of_study }}" required>
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="graduation_year" class="form-label">Graduation Year*</label>
+                                    <input type="number" id="graduation_year" name="graduation_year" min="2000" max="2030" class="form-input" value="{{ student.graduation_year }}" required>
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="skills" class="form-label">Skills (comma separated)</label>
+                                    <input type="text" id="skills" name="skills" class="form-input" value="{{ student.skills }}" placeholder="Python, Java, Web Development...">
+                                </div>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="phone" class="form-label">Phone Number</label>
+                                    <input type="tel" id="phone" name="phone" class="form-input" value="{{ student.phone }}">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="location" class="form-label">Location</label>
+                                    <input type="text" id="location" name="location" class="form-input" value="{{ student.location }}">
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="website" class="form-label">Personal Website</label>
+                                <input type="url" id="website" name="website" class="form-input" value="{{ student.website }}" placeholder="https://your-website.com">
+                            </div>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="linkedin" class="form-label">LinkedIn Profile</label>
+                                    <input type="url" id="linkedin" name="linkedin" class="form-input" value="{{ student.linkedin }}" placeholder="https://linkedin.com/in/username">
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="github" class="form-label">GitHub Profile</label>
+                                    <input type="url" id="github" name="github" class="form-input" value="{{ student.github }}" placeholder="https://github.com/username">
+                                </div>
+                            </div>
+                            
+                            <div class="space-y-2">
+                                <label for="twitter" class="form-label">Twitter Profile</label>
+                                <input type="url" id="twitter" name="twitter" class="form-input" value="{{ student.twitter }}" placeholder="https://twitter.com/username">
+                            </div>
+
+                            <div class="space-y-2">
+                                <label class="form-label">Current Profile Image</label>
+                                <div class="h-32 w-32 rounded-full overflow-hidden border">
+                                    {% if student.profile_image %}
+                                        <img src="{{ url_for('static', filename=student.profile_image) }}" alt="{{ student.first_name }}" class="h-full w-full object-cover">
+                                    {% else %}
+                                        <div class="h-full w-full bg-gray-200 flex items-center justify-center">
+                                            <i class="fas fa-user text-gray-400 text-4xl"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="profile_image" class="form-label">Update Profile Image</label>
+                                <input type="file" id="profile_image" name="profile_image" class="form-input" accept="image/*">
+                                <p class="text-sm text-muted">Leave empty to keep current image</p>
+                            </div>
+
+                            <div class="flex justify-end space-x-3">
+                                <a href="{{ url_for('student_profile') }}" class="btn btn-outline">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Save Changes</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

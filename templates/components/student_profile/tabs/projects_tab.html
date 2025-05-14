@@ -1,0 +1,123 @@
+<div class="space-y-6 tab-content hidden" id="projects-tab">
+    <div class="flex justify-between items-center mb-6">
+        <h3 class="text-xl font-semibold">Projects</h3>
+        <button class="btn btn-primary" id="addProjectBtn">
+            <i class="fas fa-plus mr-2"></i>
+            Add Project
+        </button>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for project in student.projects %}
+        <div class="bg-white rounded-lg border p-4 hover:shadow-lg transition">
+            <h4 class="font-semibold mb-2">{{ project.title }}</h4>
+            <p class="text-sm text-gray-600 mb-4">{{ project.description }}</p>
+            <div class="flex justify-between items-center">
+                <span class="text-sm text-gray-500">
+                    {{ project.created_at.strftime('%B %d, %Y') }}
+                </span>
+                <a href="{{ url_for('static', filename=project.file_path) }}" 
+                   class="btn btn-sm btn-outline" download>
+                    <i class="fas fa-download mr-2"></i>
+                    Download
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+<!--
+    --Resume section --
+    <div class="mt-8">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-xl font-semibold">Resume</h3>
+            <div class="flex gap-2">
+                <a href="{{ url_for('resume_builder') }}" class="btn btn-outline">
+                    <i class="fas fa-edit mr-2"></i>
+                    Edit
+                </a>
+                <a href="{{ url_for('download_resume') }}" class="btn btn-primary">
+                    <i class="fas fa-download mr-2"></i>
+                    Download PDF
+                </a>
+            </div>
+        </div>
+        
+        <div class="border rounded-lg p-6">
+             --Resume preview --
+            <div class="space-y-6">
+                <div class="text-center border-b pb-4">
+                    <h2 class="text-2xl font-bold mb-1">John Doe</h2>
+                    <p class="text-muted-foreground">Computer Science Student</p>
+                    <div class="flex justify-center gap-3 mt-2 text-sm">
+                        <span>john.doe@email.com</span>
+                        <span>•</span>
+                        <span>(123) 456-7890</span>
+                        <span>•</span>
+                        <span>New York, NY</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-md font-bold mb-2 border-b">EDUCATION</h3>
+                    <div class="mb-2">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Bachelor of Science in Computer Science</span>
+                            <span>2022 - Present</span>
+                        </div>
+                        <div class="text-sm text-muted-foreground">State University</div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-md font-bold mb-2 border-b">SKILLS</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-1 rounded-full bg-primary-orange"></div>
+                            <span>JavaScript, HTML, CSS</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-1 rounded-full bg-primary-orange"></div>
+                            <span>React, Node.js, Express</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-1 rounded-full bg-primary-orange"></div>
+                            <span>Python, Flask, Django</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="w-1 h-1 rounded-full bg-primary-orange"></div>
+                            <span>SQL, MongoDB, PostgreSQL</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-md font-bold mb-2 border-b">EXPERIENCE</h3>
+                    <div class="mb-3">
+                        <div class="flex justify-between">
+                            <span class="font-medium">Web Development Intern</span>
+                            <span>Summer 2023</span>
+                        </div>
+                        <div class="text-sm text-muted-foreground">TechCorp Inc.</div>
+                        <ul class="list-disc ml-5 mt-1 text-sm">
+                            <li>Assisted in developing responsive web applications using React</li>
+                            <li>Collaborated with senior developers on client projects</li>
+                            <li>Implemented UI components based on designer specifications</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-md font-bold mb-2 border-b">PROJECTS</h3>
+                    <div class="mb-2">
+                        <span class="font-medium">Student Management System</span>
+                        <ul class="list-disc ml-5 mt-1 text-sm">
+                            <li>Developed a full-stack application using React and Flask</li>
+                            <li>Implemented authentication system and role-based access control</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+-->

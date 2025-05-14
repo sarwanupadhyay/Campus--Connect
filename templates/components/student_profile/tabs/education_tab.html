@@ -1,0 +1,20 @@
+
+<div class="space-y-6 tab-content hidden" id="education-tab">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-lg font-medium">Education</h3>
+        <a href="{{ url_for('edit_student_profile') }}" class="text-primary-orange hover:underline">
+            <i class="fas fa-edit mr-1"></i>
+            Edit
+        </a>
+    </div>
+    <div class="border-l-2 border-primary-orange pl-4 pb-6">
+        <div class="flex justify-between">
+            <h4 class="font-medium">{{ student.field_of_study }}</h4>
+            <span class="text-sm text-muted-foreground">{% if student.graduation_year %}Current - {{ student.graduation_year }}{% else %}Current{% endif %}</span>
+        </div>
+        <div class="flex items-center gap-1 mt-1">
+            <i class="fas fa-university text-muted"></i>
+            <span class="text-muted">{{ student.university }}</span>
+        </div>
+    </div>
+</div>

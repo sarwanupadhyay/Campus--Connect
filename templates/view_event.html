@@ -1,0 +1,218 @@
+
+{% extends "layout.html" %}
+
+{% block title %}{{ event.title }} - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                {% if session.role == 'student' %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_profile') }}" class="sidebar-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resume Builder</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_profile') }}" class="sidebar-link">
+                        <i class="fas fa-university"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('add_event') }}" class="sidebar-link">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Add Event</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between gap-4 z-10">
+            <div class="flex gap-3 items-center lg:hidden">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+            
+            <div class="hidden sm:block">
+                <h1 class="text-lg font-semibold">Event Details</h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <a href="javascript:history.back()" class="btn btn-outline">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back
+                </a>
+            </div>
+        </header>
+
+        <!-- Event Details content -->
+        <div class="p-4 lg:p-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <!-- Event header -->
+                    <div class="h-64 w-full bg-gray-100 relative">
+                        {% if event.image %}
+                            <img src="{{ url_for('static', filename=event.image) }}" alt="{{ event.title }}" class="w-full h-full object-cover">
+                        {% else %}
+                            <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                                <i class="fas fa-calendar-day text-gray-400 text-6xl"></i>
+                            </div>
+                        {% endif %}
+                        <div class="absolute top-4 right-4">
+                            <span class="bg-primary-orange text-white text-sm font-medium px-3 py-1 rounded">
+                                {{ event.event_type }}
+                            </span>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                            <h1 class="text-3xl font-bold text-white">{{ event.title }}</h1>
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-2">
+                                <div class="flex items-center gap-1 text-white">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    <span>{{ event.date.strftime('%B %d, %Y') }}</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-white">
+                                    <i class="fas fa-clock"></i>
+                                    <span>{{ event.date.strftime('%I:%M %p') }}</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-white">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    <span>{{ event.location }}</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-white">
+                                    <i class="fas fa-university"></i>
+                                    <a href="{{ url_for('view_campus', campus_id=campus.id) }}" class="hover:underline">
+                                        {{ campus.name }}
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Event details -->
+                    <div class="p-6">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+                            <div>
+                                <span class="inline-block px-3 py-1 rounded-full
+                                    {% if event.status == 'upcoming' %}bg-blue-100 text-blue-800
+                                    {% elif event.status == 'active' %}bg-green-100 text-green-800
+                                    {% elif event.status == 'completed' %}bg-gray-100 text-gray-800
+                                    {% elif event.status == 'canceled' %}bg-red-100 text-red-800
+                                    {% endif %}">
+                                    {{ event.status | title }}
+                                </span>
+                            </div>
+                            <div class="flex gap-3">
+                                <button class="btn btn-outline">
+                                    <i class="far fa-calendar-plus mr-2"></i>
+                                    Add to Calendar
+                                </button>
+                                <button class="btn btn-primary">
+                                    <i class="fas fa-check mr-2"></i>
+                                    Register
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="space-y-6">
+                            <div>
+                                <h3 class="text-lg font-medium mb-3">Event Description</h3>
+                                <div class="prose max-w-none">
+                                    <p>{{ event.description }}</p>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t pt-6">
+                                <h3 class="text-lg font-medium mb-3">Location</h3>
+                                <div class="flex items-start gap-3">
+                                    <div class="bg-primary-light/50 p-2 rounded-full">
+                                        <i class="fas fa-map-marker-alt text-primary-orange"></i>
+                                    </div>
+                                    <div>
+                                        <p>{{ event.location }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="border-t pt-6">
+                                <h3 class="text-lg font-medium mb-3">Organizer</h3>
+                                <div class="flex items-start gap-3">
+                                    <div class="w-12 h-12 rounded overflow-hidden bg-gray-100 flex-shrink-0">
+                                        {% if campus.profile_image %}
+                                            <img src="{{ url_for('static', filename=campus.profile_image) }}" alt="{{ campus.name }}" class="w-full h-full object-cover">
+                                        {% else %}
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <i class="fas fa-university text-gray-400 text-2xl"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium">{{ campus.name }}</h4>
+                                        <p class="text-sm text-muted">{{ campus.location }}</p>
+                                        <a href="{{ url_for('view_campus', campus_id=campus.id) }}" class="text-primary-orange hover:underline text-sm mt-1 inline-block">
+                                            View Campus Profile
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,137 @@
+
+<div class="bg-white rounded-lg shadow overflow-hidden">
+    <div class="border-b">
+        <div class="flex overflow-x-auto">
+            <button class="tab-button active px-6 py-3 font-medium" data-tab="about">About</button>
+            <button class="tab-button px-6 py-3 text-muted hover:text-black" data-tab="education">Education</button>
+            <button class="tab-button px-6 py-3 text-muted hover:text-black" data-tab="projects">Projects</button>
+            <button class="tab-button px-6 py-3 text-muted hover:text-black" data-tab="resume">Resume</button>
+        </div>
+    </div>
+
+    <div id="about-tab" class="tab-content p-6">
+        {% include 'components/student_profile/tabs/about_tab.html' %}
+    </div>
+    
+    <div id="education-tab" class="tab-content p-6 hidden">
+        {% include 'components/student_profile/tabs/education_tab.html' %}
+    </div>
+    
+    <div id="projects-tab" class="tab-content p-6 hidden">
+        {% include 'components/student_profile/tabs/projects_tab.html' %}
+    </div>
+    
+    <div id="resume-tab" class="tab-content p-6 hidden">
+        <div class="space-y-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-lg font-medium">Resume</h3>
+                <div class="flex gap-2">
+                    <a href="{{ url_for('edit_resume') }}" class="btn btn-outline btn-sm">
+                        <i class="fas fa-edit mr-2"></i>
+                        Edit Resume
+                    </a>
+                    <a href="{{ url_for('download_resume') }}" class="btn btn-primary btn-sm">
+                        <i class="fas fa-download mr-2"></i>
+                        Download PDF
+                    </a>
+                </div>
+                
+            </div>
+            
+            <div class="border rounded-md p-6 bg-white">
+                <div class="space-y-6">
+                    <div class="text-center border-b pb-4">
+                        <h2 class="text-xl font-bold">{{ student.first_name }} {{ student.last_name }}</h2>
+                        <p class="text-muted">{{ student.field_of_study }} Student</p>
+                        <div class="flex flex-wrap justify-center gap-2 mt-2 text-sm">
+                            <span>{{ user.email }}</span>
+                            {% if student.phone %}
+                                <span class="hidden sm:inline">•</span>
+                                <span>{{ student.phone }}</span>
+                            {% endif %}
+                            {% if student.location %}
+                                <span class="hidden sm:inline">•</span>
+                                <span>{{ student.location }}</span>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-md font-semibold mb-2 border-b pb-1">EDUCATION</h3>
+                        <div class="mb-2">
+                            <div class="flex justify-between flex-wrap">
+                                <span class="font-medium">{{ student.field_of_study }}</span>
+                                <span class="text-sm text-gray-600">
+                                    {% if student.graduation_year %}
+                                        {{ student.graduation_year - 4 }} - {{ student.graduation_year }}
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="text-sm text-muted">{{ student.university }}</div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h3 class="text-md font-semibold mb-2 border-b pb-1">SKILLS</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-1">
+                            {% if student.skills %}
+                                {% for skill in student.skills.split(',') %}
+                                    <div class="flex items-center gap-2">
+                                        <div class="w-1.5 h-1.5 rounded-full bg-primary-orange"></div>
+                                        <span>{{ skill.strip() }}</span>
+                                    </div>
+                                {% endfor %}
+                            {% else %}
+                                <div class="text-muted">No skills listed</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    {% if student.experience %}
+                        <div>
+                            <h3 class="text-md font-semibold mb-2 border-b pb-1">EXPERIENCE</h3>
+                            <div class="space-y-3">
+                                {{ student.experience|safe }}
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    {% if student.certifications %}
+                        <div>
+                            <h3 class="text-md font-semibold mb-2 border-b pb-1">CERTIFICATIONS</h3>
+                            <div class="space-y-2">
+                                {{ student.certifications|safe }}
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const tabContents = document.querySelectorAll('.tab-content');
+    
+    tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            const tabName = button.getAttribute('data-tab');
+            
+            // Update active tab button
+            tabButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            
+            // Show selected tab content, hide others
+            tabContents.forEach(content => {
+                if (content.id === tabName + '-tab') {
+                    content.classList.remove('hidden');
+                } else {
+                    content.classList.add('hidden');
+                }
+            });
+        });
+    });
+});
+</script>

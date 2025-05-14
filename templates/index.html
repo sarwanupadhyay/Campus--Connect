@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Connect</title>
+    <link rel="icon" type="image" href="{{ url_for('static', filename='campus--connect.png') }}">
+    <link rel="stylesheet" href={{url_for('static',filename='style.css')}}>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600;700&display=swap" rel="stylesheet">
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+</head>
+<body>
+
+<div class="header">
+ <div class="header">
+
+    <div class="container">
+        <div class="navbar">
+            <div class="logo">
+                <a href="/"><img src="{{url_for('static',filename='img/campus--connect.png')}}" width="110px"></a>
+            </div>
+            <nav>
+                <ul id="menuitems"> 
+                    <li><a href="#">Home</a></li>
+                    <li><a href="/about">About</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <button><a href="/login">Login</a></button>
+                </ul>
+            </nav>
+            <img src="{{url_for('static',filename='img/menu.png')}}"class="menuicon" onclick="menutoggle()">
+        </div>
+        <div class="row">
+            <div class="col2">
+                <h1>From Classrooms to Careers — Seamlessly</h1>
+                <p> “Empowering students to turn their academic achievements into professional success by building connections, showcasing portfolios, and unlocking opportunities — all in one place.”</p>
+                <a href="/auth/login" class="btn1">Join Now &#8594;</a>
+            </div>
+            <div class="col2">
+                <img src="{{url_for('static',filename='img/front.png')}}">
+            </div>
+
+        </div>
+    </div> 
+    
+</div> 
+
+<div class="header2">   
+    <div class="sec2">
+        <div class="row2">
+            <div class="col22">
+                <img src="{{url_for('static',filename='img/front2.png')}}">
+            </div>
+            <div class="col22">
+                <h1>Showcase Skills. Share Stories. Secure Success</h1>
+                <p>"Empowering students to display their talents, share inspiring journeys, and unlock endless opportunities. **Campus Connect** bridges the gap between potential and success, fostering collaboration, growth, and a brighter future."</p>
+            </div>
+        </div>
+    </div>
+</div> 
+
+        <div class="brands">
+            <div class="small-container">
+                <div class="row">
+                    <div class="col5">
+                        <a href="https://gehu.ac.in/" target="_blank">
+                            <img src="{{url_for('static',filename='img/gehu.png')}}" alt="Clickable Image">
+                        </a>                                     
+                    </div>
+                    <div class="col5">
+                        <a href="https://www.hinducollege.ac.in/" target="_blank">
+                            <img src="{{url_for('static',filename='img/hinducollege.png')}}" alt="Clickable Image">
+                        </a>              
+                    </div>
+                    <div class="col5">
+                        <a href="https://www.amity.edu/" target="_blank">
+                            <img src="{{url_for('static',filename='img/amity-university.png')}}" alt="Clickable Image">
+                        </a>         
+                    </div>
+                    <div class="col5">
+                        <a href="https://www.du.ac.in/" target="_blank">
+                            <img src="{{url_for('static',filename='img/delhiuniversity.png')}}" alt="Clickable Image">
+                        </a>                
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="footer">
+            <div class="container">
+                <div class="row">
+                    <div class="footerco1">
+                        <h3>Download Our App</h3>
+                        <p>Download App for Android and ios mobile phone</p>
+                        <div class="applogo">
+                            <img src="{{url_for('static',filename='img/play-store.png')}}">
+                            <img src="{{url_for('static',filename='img/app-store.png')}}">
+                        </div>
+                    </div>
+                    <div class="footerco2">
+                        <img src="{{url_for('static',filename='img/logo.png')}}">
+                        <p>Transform your skills, share your story, and connect with opportunities — because your career journey starts here</p>
+                    </div>
+                    <div class="footerco3">
+                        <h3>Useful Links</h3>
+                        <ul>
+                            <li><a href="/" class="uselinks">Home</a></li>
+                            <li><a href="/about" class="uselinks">About</a></li>
+                            <li><a href="/contact" class="uselinks">Contact</a></li>
+                            <li><a href="/login" class="uselinks">Login/Signup</a></li>
+                        </ul>
+                    </div>
+                    <div class="footerco4">
+                        <h3>Follow Us</h3>
+                        <ul>
+                            <li ><a href="https://www.facebook.com/" target="_blank" class="uselinks">Facebook</a></li>
+                            <li ><a href="https://www.instagram.com/" class="uselinks" target="_blank">Instagram</a></li>
+                            <li ><a href="https://github.com/" class="uselinks" target="_blank">GitHub</a></li>
+                            <li ><a href="https://www.linkedin.com/" class="uselinks"target="_blank">LinkedIn</a></li>
+                        </ul>
+                    </div>
+                    <hr>
+                    <br>
+                    <p class="copyright">Copyright 2025 - Campus Connect</p>
+                </div>
+            </div>
+        </div>
+
+
+     <!-- link to js -->
+     <script src={{url_for('static',filename='main.js')}}></script>
+        
+</body>
+</html>
+
+

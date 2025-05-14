@@ -1,0 +1,188 @@
+
+{% extends "layout.html" %}
+
+{% block title %}{{ student.first_name }} {{ student.last_name }} - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                {% if session.role == 'student' %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_profile') }}" class="sidebar-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resume Builder</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_profile') }}" class="sidebar-link">
+                        <i class="fas fa-university"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('add_event') }}" class="sidebar-link">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Add Event</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between gap-4 z-10">
+            <div class="flex gap-3 items-center lg:hidden">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+            
+            <div class="hidden sm:block">
+                <h1 class="text-lg font-semibold">Student Profile</h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <a href="javascript:history.back()" class="btn btn-outline">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back
+                </a>
+            </div>
+        </header>
+
+        <!-- Student Profile content -->
+        <div class="p-4 lg:p-6">
+            <div class="max-w-4xl mx-auto">
+                <!-- Profile header with cover and avatar -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="h-48 bg-primary-light/30 relative">
+                        <img 
+                            src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2000&auto=format&fit=crop"
+                            alt="Cover"
+                            class="w-full h-full object-cover"
+                        > 
+                    </div>
+                    <div class="px-6 py-4 flex flex-col md:flex-row gap-6 items-center md:items-end -mt-16">
+                        <div class="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white relative group">
+                            {% if student.profile_image %}
+                            <img src="{{ url_for('static', filename=student.profile_image) }}?t={{ now }}"  
+                                     alt="{{ student.first_name }}" 
+                                     class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-user text-gray-400 text-4xl"></i>
+                                </div>
+                            {% endif %}
+                        </div>
+                        <div class="text-center md:text-left">
+                            <h2 class="text-2xl font-bold">{{ student.first_name }} {{ student.last_name }}</h2>
+                            <p class="text-muted">{{ student.field_of_study }} Student</p>
+                            <p class="text-sm">{{ student.university }}
+                                {% if student.graduation_year %}
+                                    | Class of {{ student.graduation_year }}
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="mt-4 md:mt-0 md:ml-auto">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-user-plus mr-2"></i>
+                                Connect
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Profile sections using tabs -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="border-b">
+                        <div class="flex overflow-x-auto">
+                            <button class="px-6 py-3 font-medium border-b-2 border-primary-orange">About</button>
+                            <button class="px-6 py-3 text-muted hover:text-black">Skills</button>
+                            <button class="px-6 py-3 text-muted hover:text-black">Education</button>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <div class="space-y-6">
+                            <!-- About section -->
+                            <div>
+                                <h3 class="text-lg font-medium mb-4">About</h3>
+                                <p class="text-gray-600">
+                                    {% if student.bio %}
+                                        {{ student.bio }}
+                                    {% else %}
+                                        No bio information available.
+                                    {% endif %}
+                                </p>
+                            </div>
+
+                            <!-- Skills section -->
+                            <div>
+                                <h3 class="text-lg font-medium mb-4">Skills</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    {% if student.skills %}
+                                        {% for skill in student.skills.split(',') %}
+                                            <span class="bg-primary-light/30 px-3 py-1 rounded-full">{{ skill.strip() }}</span>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-muted">No skills listed</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

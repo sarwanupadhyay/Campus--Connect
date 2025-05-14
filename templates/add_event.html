@@ -1,0 +1,141 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Add Event - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_profile') }}" class="sidebar-link">
+                        <i class="fas fa-university"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="{{ url_for('add_event') }}" class="sidebar-link">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Add Event</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between gap-4 z-10">
+            <div class="flex gap-3 items-center lg:hidden">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+            
+            <div class="hidden sm:block">
+                <h1 class="text-lg font-semibold">Add New Event</h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <a href="{{ url_for('campus_dashboard') }}" class="btn btn-outline">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Dashboard
+                </a>
+            </div>
+        </header>
+
+        <!-- Add Event content -->
+        <div class="p-4 lg:p-6">
+            <div class="max-w-3xl mx-auto">
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="p-6">
+                        <h2 class="text-xl font-semibold mb-4">Create a New Event</h2>
+                        
+                        <form method="post" enctype="multipart/form-data" class="space-y-6">
+                            <div class="space-y-2">
+                                <label for="title" class="form-label">Event Title*</label>
+                                <input type="text" id="title" name="title" class="form-input" required>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="description" class="form-label">Event Description*</label>
+                                <textarea id="description" name="description" class="form-textarea h-32" required></textarea>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="space-y-2">
+                                    <label for="event_type" class="form-label">Event Type*</label>
+                                    <select id="event_type" name="event_type" class="form-select" required>
+                                        <option value="">Select Type</option>
+                                        <option value="Workshop">Workshop</option>
+                                        <option value="Conference">Conference</option>
+                                        <option value="Seminar">Seminar</option>
+                                        <option value="Career Fair">Career Fair</option>
+                                        <option value="Networking">Networking</option>
+                                        <option value="Hackathon">Hackathon</option>
+                                        <option value="Cultural">Cultural</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="space-y-2">
+                                    <label for="location" class="form-label">Event Location*</label>
+                                    <input type="text" id="location" name="location" class="form-input" required>
+                                </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="date" class="form-label">Event Date and Time*</label>
+                                <input type="datetime-local" id="date" name="date" class="form-input" required>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="image" class="form-label">Event Banner Image</label>
+                                <input type="file" id="image" name="image" class="form-input" accept="image/*">
+                            </div>
+
+                            <div class="flex justify-end space-x-3">
+                                <a href="{{ url_for('campus_dashboard') }}" class="btn btn-outline">Cancel</a>
+                                <button type="submit" class="btn btn-primary">Create Event</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

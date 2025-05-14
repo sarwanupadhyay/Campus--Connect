@@ -1,0 +1,341 @@
+{% extends "layout.html" %}
+
+{% block title %}{{ student.first_name }} {{ student.last_name }} - Profile | Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <img src="{{ url_for('static', filename='img/campus--connect.png') }}" alt="Campus Connect Logo" class="h-10">
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item active">
+                    <a href="{{ url_for('student_profile') }}" class="sidebar-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resume Builder</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+                
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+    
+    <div class="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <header>
+            <div class="flex gap-3 items-center lg:hidden">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+            
+            <div class="hidden sm:block">
+                <h1 class="text-lg font-semibold">My Profile</h1>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button class="btn-icon btn-ghost relative">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge"></span>
+                </button>
+                <div class="btn-icon btn-ghost rounded-full overflow-hidden">
+                    {% if student.profile_image %}
+                    <img src="{{ url_for('static', filename=student.profile_image) }}?t={{ now }}" 
+                             alt="{{ student.first_name }}" 
+                             class="w-full h-full object-cover profile-image">
+                    {% else %}
+                        <div class="w-full h-full bg-gray-200 flex items-center justify-center profile-image">
+                            <i class="fas fa-user text-gray-400"></i>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </header>
+        
+        <!-- Profile content -->
+        <div class="p-4 lg:p-6">
+            <div class="max-w-4xl mx-auto">
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="h-48 bg-primary-light/30 relative">
+                        <img src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=2000&auto=format&fit=crop"
+                            alt="Cover" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 flex gap-2">
+                            <a href="{{ url_for('edit_student_profile') }}" class="btn btn-primary">
+                                <i class="fas fa-edit mr-2"></i>
+                                Edit Profile
+                            </a>
+                        </div>
+                    </div>
+                    <div class="px-6 py-4 flex flex-col md:flex-row gap-6 items-center md:items-end -mt-16">
+                        <div class="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white relative group">
+                            {% if student.profile_image %}
+                            <img src="{{ url_for('static', filename=student.profile_image) }}?t={{ now }}"  
+                                     alt="{{ student.first_name }}" 
+                                     class="w-full h-full object-cover">
+                            {% else %}
+                                <div class="w-full h-full bg-gray-200 flex items-center justify-center">
+                                    <i class="fas fa-user text-gray-400 text-4xl"></i>
+                                </div>
+                            {% endif %}
+                            <form id="profile_picture_form" action="{{ url_for('upload_profile_picture') }}" method="post" enctype="multipart/form-data">
+                                <label for="profile_picture" class="absolute inset-0 bg-black/50 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 cursor-pointer transition">
+                                    <i class="fas fa-camera mr-2"></i>
+                                    Update Photo
+                                </label>
+                                <input type="file" id="profile_picture" name="profile_picture" accept="image/*" class="hidden" onchange="previewAndUploadImage(this)">
+                            </form>
+                        </div>
+                        <div class="text-center md:text-left flex-grow">
+                            <h2 class="text-2xl font-bold">{{ student.first_name }} {{ student.last_name }}</h2>
+                            <p class="text-muted">{{ student.field_of_study }} Student</p>
+                            <p class="text-sm">{{ student.university }}
+                                {% if student.graduation_year %}| Class of {{ student.graduation_year }}{% endif %}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Image Preview Modal -->
+             <div id="imagePreviewModal" class="fixed inset-0 bg-black/50 hidden items-center justify-center z-50">
+                    <div class="bg-white p-4 rounded-lg shadow-lg max-w-md w-full">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-bold">Preview Image</h3>
+                            <button onclick="closeImagePreview()" class="text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="mb-4">
+                            <img id="imagePreview" src="" alt="Image Preview" class="w-full h-auto rounded">
+                        </div>
+                        <div class="flex justify-end space-x-2">
+                            <button onclick="closeImagePreview()" class="btn btn-outline">Cancel</button>
+                            <button onclick="confirmImageUpload()" class="btn btn-primary">Upload</button>
+                        </div>
+                    </div>
+                </div>
+                
+                {% include 'components/student_profile/tabs/tabs_container.html' %}
+            </div>
+        </div>
+    </div>
+</div>
+
+ <!-- <div id="addProjectModal" class="modal">
+    <div class="bg-white rounded-lg w-full max-w-md p-6">
+        <h3 class="text-xl font-semibold mb-4">Add New Project</h3>
+        <form id="projectForm" class="space-y-4">
+            <div>
+                <label for="project_title" class="block text-sm font-medium text-gray-700">Project Title</label>
+                <input type="text" id="project_title" name="title" class="form-input mt-1 block w-full" required>
+            </div>
+            <div>
+                <label for="project_description" class="block text-sm font-medium text-gray-700">Description</label>
+                <textarea id="project_description" name="description" rows="3" 
+                          class="form-textarea mt-1 block w-full"></textarea>
+            </div>
+            <div>
+                <label for="project_file" class="block text-sm font-medium text-gray-700">Project File</label>
+                <input type="file" id="project_file" name="project_file" class="form-input mt-1 block w-full" required>
+            </div>
+            <div class="flex justify-end gap-2">
+                <button type="button" class="btn btn-outline" onclick="closeProjectModal()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Upload Project</button>
+            </div>
+        </form>
+    </div>
+</div> -->
+
+<link rel="stylesheet" href="/static/css/style.css">
+
+<script>
+let selectedFile = null;
+
+function previewAndUploadImage(input) {
+    if (input.files && input.files[0]) {
+        selectedFile = input.files[0];
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            document.getElementById('imagePreview').src = e.target.result;
+            document.getElementById('imagePreviewModal').classList.remove('hidden');
+            document.getElementById('imagePreviewModal').classList.add('flex');
+        };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function closeImagePreview() {
+    document.getElementById('imagePreviewModal').classList.add('hidden');
+    document.getElementById('imagePreviewModal').classList.remove('flex');
+    document.getElementById('profile_picture').value = '';
+    selectedFile = null;
+}
+
+function confirmImageUpload() {
+    if (selectedFile) {
+        const formData = new FormData();
+        formData.append('profile_picture', selectedFile);
+        
+        fetch('{{ url_for("upload_profile_picture") }}', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Refresh the profile image without reloading the page
+                const profileImages = document.querySelectorAll('.profile-image');
+                profileImages.forEach(img => {
+                    if (img.tagName === 'IMG') {
+                        img.src = '{{ url_for("static", filename="") }}' + data.image_path + '?t=' + new Date().getTime();
+                    } else {
+                        img.style.backgroundImage = 'url("{{ url_for("static", filename="") }}' + data.image_path + '?t=' + new Date().getTime() + '")';
+                    }
+                });
+                
+                // Close the preview modal
+                closeImagePreview();
+                
+                // Show success message
+                alert('Profile picture updated successfully!');
+                
+                // Reload the page after a short delay to update all instances
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500);
+            } else {
+                alert('Error uploading image: ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while uploading the image.');
+        });
+    }
+}
+
+// Profile picture upload
+document.getElementById('profile_picture').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    const formData = new FormData();
+    formData.append('profile_picture', file);
+
+    fetch('/student-dashboard/profile/upload_picture', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert('Failed to upload profile picture');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to upload profile picture');
+    });
+});
+
+// Project modal functionality
+const projectModal = document.getElementById('addProjectModal');
+const projectForm = document.getElementById('projectForm');
+
+document.getElementById('addProjectBtn').addEventListener('click', function() {
+    projectModal.classList.remove('hidden');
+});
+
+function closeProjectModal() {
+    projectModal.classList.add('hidden');
+}
+
+projectForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(projectForm);
+
+    fetch('/student-dashboard/project/upload', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            window.location.reload();
+        } else {
+            alert('Failed to upload project');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Failed to upload project');
+    });
+});
+
+// Tab functionality
+document.addEventListener('DOMContentLoaded', function() {
+        const tabButtons = document.querySelectorAll('.tab-button');
+        const tabContents = document.querySelectorAll('.tab-content');
+        
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Remove active class from all buttons and contents
+                tabButtons.forEach(btn => {
+                    btn.classList.remove('active', 'border-primary-orange');
+                    btn.classList.add('text-muted', 'hover:text-black');
+                });
+                tabContents.forEach(content => {
+                    content.classList.add('hidden');
+                    content.classList.remove('active');
+                });
+                
+                // Add active class to clicked button
+                button.classList.add('active', 'border-primary-orange');
+                button.classList.remove('text-muted', 'hover:text-black');
+                
+                // Show corresponding content
+                const tabId = button.getAttribute('data-tab');
+                const activeContent = document.getElementById(`${tabId}-tab`);
+                activeContent.classList.remove('hidden');
+                activeContent.classList.add('active');
+            });
+        });
+    });
+</script>
+{% endblock %}

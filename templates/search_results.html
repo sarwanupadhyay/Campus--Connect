@@ -1,0 +1,251 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Search Results - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <img src="{{ url_for('static', filename='img/campus--connect.png') }}" alt="Campus Connect Logo" class="h-10">
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                {% if session.role == 'student' %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_profile') }}" class="sidebar-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resume Builder</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_profile') }}" class="sidebar-link">
+                        <i class="fas fa-university"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('add_event') }}" class="sidebar-link">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Add Event</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="sidebar-item active">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between gap-4 z-10">
+            <div class="flex gap-3 items-center lg:hidden">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+            
+            <div class="flex-1 max-w-2xl">
+                <form action="{{ url_for('search') }}" method="get">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground"></i>
+                        <input 
+                            type="text"
+                            name="q"
+                            placeholder="Search students, campuses, events..." 
+                            class="form-input pl-10 bg-gray-50 w-full"
+                            value="{{ query }}"
+                        >
+                        <input type="hidden" name="type" value="{{ search_type }}">
+                    </div>
+                </form>
+            </div>
+            
+            <div class="flex items-center gap-2">
+                <button class="btn-icon btn-ghost relative">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge"></span>
+                </button>
+                <button class="btn-icon btn-ghost rounded-full overflow-hidden">
+                    <img 
+                        src="https://randomuser.me/api/portraits/men/32.jpg"
+                        alt="Profile"
+                        class="w-full h-full object-cover"
+                    >
+                </button>
+            </div>
+        </header>
+
+        <!-- Search results content -->
+        <div class="p-4 lg:p-6">
+            <div class="mb-6">
+                <h1 class="text-2xl font-semibold mb-2">Search Results{% if query %}: "{{ query }}"{% endif %}</h1>
+                
+                <div class="flex gap-2 overflow-x-auto pb-2">
+                    <a href="{{ url_for('search', q=query, type='all') }}" 
+                       class="btn btn-sm {% if search_type == 'all' %}btn-primary{% else %}btn-outline{% endif %}">
+                        All
+                    </a>
+                    <a href="{{ url_for('search', q=query, type='students') }}" 
+                       class="btn btn-sm {% if search_type == 'students' %}btn-primary{% else %}btn-outline{% endif %}">
+                        Students
+                    </a>
+                    <a href="{{ url_for('search', q=query, type='campuses') }}" 
+                       class="btn btn-sm {% if search_type == 'campuses' %}btn-primary{% else %}btn-outline{% endif %}">
+                        Campuses
+                    </a>
+                    <a href="{{ url_for('search', q=query, type='events') }}" 
+                       class="btn btn-sm {% if search_type == 'events' %}btn-primary{% else %}btn-outline{% endif %}">
+                        Events
+                    </a>
+                </div>
+            </div>
+
+            {% if not query %}
+                <div class="text-center py-8">
+                    <div class="text-5xl mb-4"><i class="fas fa-search text-muted-foreground"></i></div>
+                    <h2 class="text-xl font-medium mb-2">Begin Your Search</h2>
+                    <p class="text-muted-foreground">Enter keywords to find students, campuses, or events</p>
+                </div>
+            {% else %}
+                {% if not students and not campuses and not events %}
+                    <div class="text-center py-8">
+                        <div class="text-5xl mb-4"><i class="fas fa-search text-muted-foreground"></i></div>
+                        <h2 class="text-xl font-medium mb-2">No results found</h2>
+                        <p class="text-muted-foreground">Try different keywords or browse categories</p>
+                    </div>
+                {% endif %}
+
+                {% if students and search_type in ['all', 'students'] %}
+                    <h2 class="text-xl font-semibold mb-4">Students</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                        {% for student in students %}
+                            <div class="card p-4">
+                                <div class="flex gap-4">
+                                    <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
+                                        {% if student.profile_image %}
+                                            <img src="{{ url_for('static', filename=student.profile_image) }}" alt="{{ student.first_name }}" class="w-full h-full object-cover">
+                                        {% else %}
+                                            <div class="w-full h-full flex items-center justify-center">
+                                                <i class="fas fa-user text-gray-400 text-2xl"></i>
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-grow">
+                                        <h3 class="font-medium">{{ student.first_name }} {{ student.last_name }}</h3>
+                                        <p class="text-sm text-muted-foreground">{{ student.field_of_study }}</p>
+                                        <p class="text-sm">{{ student.university }}</p>
+                                        <a href="{{ url_for('view_student', student_id=student.id) }}" class="text-primary-orange hover:underline text-sm mt-2 inline-block">View Profile</a>
+                                    </div>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if campuses and search_type in ['all', 'campuses'] %}
+                    <h2 class="text-xl font-semibold mb-4">Campuses</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                        {% for campus in campuses %}
+                            <div class="card overflow-hidden">
+                                <div class="aspect-video w-full bg-gray-100">
+                                    {% if campus.profile_image %}
+                                        <img src="{{ url_for('static', filename=campus.profile_image) }}" alt="{{ campus.name }}" class="w-full h-full object-cover">
+                                    {% else %}
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <i class="fas fa-university text-gray-400 text-4xl"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                <div class="p-4">
+                                    <h3 class="font-medium">{{ campus.name }}</h3>
+                                    <p class="text-sm text-muted-foreground">{{ campus.location }}</p>
+                                    <a href="{{ url_for('view_campus', campus_id=campus.id) }}" class="btn btn-outline border-primary-orange text-primary-orange hover:bg-primary-orange hover:text-white w-full mt-3">
+                                        View Profile
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+
+                {% if events and search_type in ['all', 'events'] %}
+                    <h2 class="text-xl font-semibold mb-4">Events</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        {% for event in events %}
+                            <div class="card overflow-hidden">
+                                <div class="aspect-video w-full bg-gray-100 relative">
+                                    {% if event.image %}
+                                        <img src="{{ url_for('static', filename=event.image) }}" alt="{{ event.title }}" class="w-full h-full object-cover">
+                                    {% else %}
+                                        <div class="w-full h-full flex items-center justify-center">
+                                            <i class="fas fa-calendar-day text-gray-400 text-4xl"></i>
+                                        </div>
+                                    {% endif %}
+                                    <div class="absolute top-2 right-2 bg-primary-orange text-white text-xs font-medium px-2 py-1 rounded">
+                                        {{ event.event_type }}
+                                    </div>
+                                </div>
+                                <div class="p-4">
+                                    <div class="flex justify-between items-start mb-2">
+                                        <h3 class="font-medium">{{ event.title }}</h3>
+                                        <span class="text-xs bg-muted px-2 py-1 rounded">{{ event.date.strftime('%b %d, %Y') }}</span>
+                                    </div>
+                                    <p class="text-sm text-muted-foreground line-clamp-2 mb-3">
+                                        {{ event.description }}
+                                    </p>
+                                    <a href="{{ url_for('view_event', event_id=event.id) }}" class="btn btn-outline border-primary-orange text-primary-orange hover:bg-primary-orange hover:text-white w-full">
+                                        View Details
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

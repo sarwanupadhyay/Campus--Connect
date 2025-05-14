@@ -1,0 +1,275 @@
+
+{% extends "layout.html" %}
+
+{% block title %}Search - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-primary-light/10 flex">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="flex items-center gap-2">
+                <img src="{{ url_for('static', filename='img/campus--connect.png') }}" alt="Campus Connect Logo" class="h-10">
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                {% if session.role == 'student' %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_profile') }}" class="sidebar-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resume Builder</span>
+                    </a>
+                </li>
+                {% else %}
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('campus_profile') }}" class="sidebar-link">
+                        <i class="fas fa-university"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('add_event') }}" class="sidebar-link">
+                        <i class="fas fa-calendar-plus"></i>
+                        <span>Add Event</span>
+                    </a>
+                </li>
+                {% endif %}
+                <li class="sidebar-item active">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="flex-1 ml-0 lg:ml-64 min-h-screen">
+        <!-- Header -->
+        <header class="sticky top-0 bg-white border-b px-4 py-3 flex items-center justify-between gap-4 z-10">
+            <div class="flex gap-3 items-center lg:hidden">
+                <i class="fas fa-school text-primary-orange"></i>
+                <span class="font-semibold">Campus Connect</span>
+            </div>
+            
+            <div class="hidden sm:block">
+                <h1 class="text-lg font-semibold">Search</h1>
+            </div>
+        </header>
+
+        <!-- Search content -->
+        <div class="p-4 lg:p-6">
+            <div class="max-w-4xl mx-auto">
+                <!-- Search form -->
+                <div class="bg-white rounded-lg shadow p-6 mb-6">
+                    <form action="{{ url_for('search') }}" method="get" class="space-y-4">
+                        <div class="space-y-2">
+                            <label for="q" class="form-label">Search</label>
+                            <div class="flex gap-4">
+                                <input type="text" id="q" name="q" class="form-input flex-1" placeholder="Search for students, campuses, or events..." value="{{ request.args.get('q', '') }}">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-search mr-2"></i>
+                                    Search
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div class="flex flex-wrap gap-4">
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="type" value="all" {% if request.args.get('type', 'all') == 'all' %}checked{% endif %} class="form-radio">
+                                <span class="ml-2">All</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="type" value="students" {% if request.args.get('type') == 'students' %}checked{% endif %} class="form-radio">
+                                <span class="ml-2">Students</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="type" value="campuses" {% if request.args.get('type') == 'campuses' %}checked{% endif %} class="form-radio">
+                                <span class="ml-2">Campuses</span>
+                            </label>
+                            <label class="inline-flex items-center">
+                                <input type="radio" name="type" value="events" {% if request.args.get('type') == 'events' %}checked{% endif %} class="form-radio">
+                                <span class="ml-2">Events</span>
+                            </label>
+                        </div>
+                    </form>
+                </div>
+                
+                {% if request.args.get('q') %}
+                    <!-- Search results -->
+                    <h2 class="text-xl font-semibold mb-4">Search Results for "{{ request.args.get('q') }}"</h2>
+                    
+                    <!-- Display students -->
+                    {% if request.args.get('type', 'all') in ['all', 'students'] %}
+                        <div class="bg-white rounded-lg shadow mb-6">
+                            <div class="p-4 border-b">
+                                <h3 class="text-lg font-medium">Students</h3>
+                            </div>
+                            <div class="p-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {% if students %}
+                                        {% for student in students %}
+                                        <div class="border rounded-lg p-4 flex gap-4 items-center">
+                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+                                                {% if student.profile_image %}
+                                                    <img src="{{ url_for('static', filename=student.profile_image) }}" alt="{{ student.first_name }}" class="w-full h-full object-cover">
+                                                {% else %}
+                                                    <div class="w-full h-full flex items-center justify-center">
+                                                        <i class="fas fa-user text-gray-400"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4 class="font-medium">{{ student.first_name }} {{ student.last_name }}</h4>
+                                                <p class="text-sm text-muted">{{ student.university }}</p>
+                                                <p class="text-sm">{{ student.field_of_study }}</p>
+                                            </div>
+                                            <div>
+                                                <a href="{{ url_for('view_student', student_id=student.id) }}" class="btn btn-sm btn-outline">View Profile</a>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-muted">No students found matching your search.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Display campuses -->
+                    {% if request.args.get('type', 'all') in ['all', 'campuses'] %}
+                        <div class="bg-white rounded-lg shadow mb-6">
+                            <div class="p-4 border-b">
+                                <h3 class="text-lg font-medium">Campuses</h3>
+                            </div>
+                            <div class="p-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {% if campuses %}
+                                        {% for campus in campuses %}
+                                        <div class="border rounded-lg p-4 flex gap-4 items-center">
+                                            <div class="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+                                                {% if campus.profile_image %}
+                                                    <img src="{{ url_for('static', filename=campus.profile_image) }}" alt="{{ campus.name }}" class="w-full h-full object-cover">
+                                                {% else %}
+                                                    <div class="w-full h-full flex items-center justify-center">
+                                                        <i class="fas fa-university text-gray-400"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="flex-1">
+                                                <h4 class="font-medium">{{ campus.name }}</h4>
+                                                <p class="text-sm text-muted">{{ campus.location }}</p>
+                                            </div>
+                                            <div>
+                                                <a href="{{ url_for('view_campus', campus_id=campus.id) }}" class="btn btn-sm btn-outline">View Profile</a>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-muted">No campuses found matching your search.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                    
+                    <!-- Display events -->
+                    {% if request.args.get('type', 'all') in ['all', 'events'] %}
+                        <div class="bg-white rounded-lg shadow mb-6">
+                            <div class="p-4 border-b">
+                                <h3 class="text-lg font-medium">Events</h3>
+                            </div>
+                            <div class="p-4">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {% if events %}
+                                        {% for event in events %}
+                                        <div class="border rounded-lg overflow-hidden">
+                                            <div class="h-40 bg-gray-100">
+                                                {% if event.image %}
+                                                    <img src="{{ url_for('static', filename=event.image) }}" alt="{{ event.title }}" class="w-full h-full object-cover">
+                                                {% else %}
+                                                    <div class="w-full h-full bg-primary-light/20 flex items-center justify-center">
+                                                        <i class="fas fa-calendar text-primary-orange text-4xl"></i>
+                                                    </div>
+                                                {% endif %}
+                                            </div>
+                                            <div class="p-4">
+                                                <div class="flex justify-between items-center mb-2">
+                                                    <h4 class="font-medium">{{ event.title }}</h4>
+                                                    <span class="text-xs px-2 py-1 rounded-full
+                                                        {% if event.status == 'upcoming' %}bg-blue-100 text-blue-800
+                                                        {% elif event.status == 'active' %}bg-green-100 text-green-800
+                                                        {% else %}bg-gray-100 text-gray-800{% endif %}
+                                                    ">{{ event.status }}</span>
+                                                </div>
+                                                <p class="text-sm mb-2">
+                                                    <i class="fas fa-calendar-day mr-1 text-muted"></i>
+                                                    <span class="text-muted">{{ event.date.strftime('%b %d, %Y at %I:%M %p') }}</span>
+                                                </p>
+                                                <p class="text-sm mb-2">
+                                                    <i class="fas fa-map-marker-alt mr-1 text-muted"></i>
+                                                    <span class="text-muted">{{ event.location }}</span>
+                                                </p>
+                                                <div class="mt-4">
+                                                    <a href="{{ url_for('view_event', event_id=event.id) }}" class="btn btn-sm btn-outline">View Event</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-muted">No events found matching your search.</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="text-center py-8">
+                        <div class="bg-primary-light/30 inline-flex items-center justify-center w-16 h-16 rounded-full mb-4">
+                            <i class="fas fa-search text-primary-orange text-2xl"></i>
+                        </div>
+                        <h2 class="text-xl font-semibold mb-2">Search for Something</h2>
+                        <p class="text-muted max-w-lg mx-auto">Enter keywords in the search bar above to find students, campuses, and events.</p>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,209 @@
+{% extends "layout.html" %}
+
+{% block title %}Student Dashboard - Campus Connect{% endblock %}
+
+{% block content %}
+<div class="page-container">
+    <!-- Sidebar -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-container">
+                <img src="{{ url_for('static', filename='img/campus--connect.png') }}" alt="Campus Connect Logo" class="h-10">
+                <span class="logo-text">Campus Connect</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-content">
+            <ul class="sidebar-menu">
+                <li class="sidebar-item active">
+                    <a href="{{ url_for('student_dashboard') }}" class="sidebar-link">
+                        <i class="fas fa-home"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('student_profile') }}" class="sidebar-link">
+                        <i class="fas fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('resume_builder') }}" class="sidebar-link">
+                        <i class="fas fa-file-alt"></i>
+                        <span>Resume Builder</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
+                        <i class="fas fa-search"></i>
+                        <span>Explore</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-bell"></i>
+                        <span>Notifications</span>
+                    </a>
+                </li>
+                <li class="sidebar-item">
+                    <a href="#" class="sidebar-link">
+                        <i class="fas fa-cog"></i>
+                        <span>Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="sidebar-footer">
+            <a href="{{ url_for('logout') }}" class="sidebar-link">
+                <i class="fas fa-sign-out-alt"></i>
+                <span>Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+            <div class="mobile-logo">
+                <i class="fas fa-school"></i>
+                <span class="logo-text">Campus Connect</span>
+            </div>
+            
+            <div class="search-container">
+                <div class="search-input-wrapper">
+                    <i class="fas fa-search search-icon"></i>
+                    <input 
+                        placeholder="Search students, campuses, events..." 
+                        class="search-input"
+                    >
+                </div>
+            </div>
+            
+            <div class="header-actions">
+                <button class="notification-button">
+                    <i class="fas fa-bell"></i>
+                    <span class="notification-badge"></span>
+                </button>
+                <button class="profile-button">
+                    <img src="{{ url_for('static', filename=student.profile_image) }}?t={{ now }}" 
+                             alt="{{ student.first_name }}" 
+                             class="w-full h-full object-cover profile-image">
+                </button>
+            </div>
+        </header>
+
+        <!-- Dashboard content -->
+        <div class="dashboard-content">
+            <h1 class="page-title">Student Dashboard</h1>
+
+            <!-- Quick actions -->
+            <div class="quick-actions">
+                <div class="quick-action-card">
+                    <div class="card-content">
+                        <div class="icon-container">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="action-text">
+                            <p class="action-label">Quick Action</p>
+                            <p class="action-title">Search Campus Events</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-action-card">
+                    <div class="card-content">
+                        <div class="icon-container">
+                            <i class="fas fa-school"></i>
+                        </div>
+                        <div class="action-text">
+                            <p class="action-label">Quick Action</p>
+                            <p class="action-title">Browse Campuses</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-action-card">
+                    <div class="card-content">
+                        <div class="icon-container">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <div class="action-text">
+                            <p class="action-label">Quick Action</p>
+                            <p class="action-title">Check Notifications</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="quick-action-card">
+                    <div class="card-content">
+                        <div class="icon-container">
+                            <i class="fas fa-search"></i>
+                        </div>
+                        <div class="action-text">
+                            <p class="action-label">Quick Action</p>
+                            <p class="action-title">Find Other Students</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming events section -->
+            <h2 class="section-title">Upcoming Events</h2>
+            <div class="events-grid">
+                {% for event in events %}
+                <div class="event-card">
+                    <div class="event-image-container">
+                        <img 
+                            src="{{ event.image }}"
+                            alt="{{ event.title }}"
+                        >
+                        <div class="event-type">
+                            {{ event.type }}
+                        </div>
+                    </div>
+                    <div class="event-details">
+                        <div class="event-header">
+                            <h3 class="event-title">{{ event.title }}</h3>
+                            <span class="event-date">{{ event.date }}</span>
+                        </div>
+                        <div class="event-campus">
+                            <i class="fas fa-school"></i>
+                            <span>{{ event.campus }}</span>
+                        </div>
+                        <p class="event-description">{{ event.description }}</p>
+                        <div class="event-action">
+                            <button class="view-button">
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Featured campuses section -->
+            <h2 class="section-title">Featured Campuses</h2>
+            <div class="campuses-grid">
+                {% for campus in campuses %}
+                <div class="campus-card">
+                    <div class="campus-image-container">
+                        <img 
+                            src="{{ campus.image }}"
+                            alt="{{ campus.name }}"
+                        >
+                    </div>
+                    <div class="campus-details">
+                        <h3 class="campus-name">{{ campus.name }}</h3>
+                        <p class="campus-focus">
+                            {{ campus.focus }}
+                        </p>
+                        <button class="view-button">
+                            View Profile
+                        </button>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
