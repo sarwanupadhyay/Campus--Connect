@@ -111,7 +111,7 @@
                             class="w-full h-full object-cover"
                         > 
                     </div>
-                    <div class="px-6 py-4 flex flex-col md:flex-row gap-6 items-center md:items-end -mt-16">
+                    <div class="px-6 py-4 flex flex-col md:flex-row gap-6 items-center md:items-end ">
                         <div class="w-32 h-32 rounded-full border-4 border-white overflow-hidden bg-white relative group">
                             {% if student.profile_image %}
                             <img src="{{ url_for('static', filename=student.profile_image) }}?t={{ now }}"  

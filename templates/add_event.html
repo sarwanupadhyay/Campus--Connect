@@ -34,12 +34,7 @@
                         <span>Add Event</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
-                        <i class="fas fa-search"></i>
-                        <span>Explore</span>
-                    </a>
-                </li>
+                
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
                         <i class="fas fa-bell"></i>
@@ -115,6 +110,11 @@
                                     <label for="location" class="form-label">Event Location*</label>
                                     <input type="text" id="location" name="location" class="form-input" required>
                                 </div>
+                            </div>
+                            <div class="space-y-2">
+                                <label for="form_url" class="form-label">Registration/Form Link</label>
+                                <input type="url" id="form_url" name="form_url" class="form-input" value="{{ event.form_url or '' }}" placeholder="https://example.com/registration-form">
+                                <p class="text-sm text-muted">Optional: Add a link to registration form, Google Form, or any related URL</p>
                             </div>
 
                             <div class="space-y-2">

@@ -95,6 +95,8 @@ class Event(db.Model):
     location = db.Column(db.String(200))
     image = db.Column(db.String(200))
     status = db.Column(db.String(20), default='upcoming')  # upcoming, active, completed, canceled
+    # Add this column to your Event model
+    form_url = db.Column(db.String(200))  # URL for event registration or details
     created_at = db.Column(db.DateTime, default=datetime.utcnow)
     
     def __repr__(self):

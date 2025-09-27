@@ -1,4 +1,3 @@
-
 {% extends "layout.html" %}
 
 {% block title %}Edit Event - Campus Connect{% endblock %}
@@ -83,7 +82,15 @@
             <div class="max-w-3xl mx-auto">
                 <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
                     <div class="p-6">
-                        <h2 class="text-xl font-semibold mb-4">Edit Event</h2>
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-xl font-semibold">Edit Event</h2>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm text-muted">
+                                    <i class="fas fa-users mr-1"></i>
+                                    {{ event.registrations_count or 0 }} registrations
+                                </span>
+                            </div>
+                        </div>
                         
                         <form method="post" enctype="multipart/form-data" class="space-y-6">
                             <div class="space-y-2">
@@ -115,6 +122,14 @@
                                     <label for="location" class="form-label">Event Location*</label>
                                     <input type="text" id="location" name="location" class="form-input" value="{{ event.location }}" required>
                                 </div>
+                            </div>
+
+                            <div class="space-y-2">
+                                <label for="registration_url" class="form-label">Registration URL</label>
+                                <input type="url" id="registration_url" name="registration_url" class="form-input" 
+                                       value="{{ event.registration_url or '' }}" 
+                                       placeholder="https://example.com/register">
+                                <p class="text-sm text-muted">Optional: External registration link for participants</p>
                             </div>
 
                             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -167,8 +182,73 @@
                         </form>
                     </div>
                 </div>
+
+                <!-- Event Management Actions -->
+                <div class="bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-semibold mb-4">Event Management</h3>
+                    <div class="flex flex-wrap gap-3">
+                        <a href="{{ url_for('view_event', event_id=event.id) }}" class="btn btn-outline">
+                            <i class="fas fa-eye mr-2"></i>
+                            View Event
+                        </a>
+                        <a href="{{ url_for('manage_registrations', event_id=event.id) }}" class="btn btn-primary">
+                            <i class="fas fa-users mr-2"></i>
+                            Manage Registrations
+                        </a>
+                        {% if event.registration_url %}
+                        <a href="{{ event.registration_url }}" target="_blank" class="btn btn-outline">
+                            <i class="fas fa-external-link-alt mr-2"></i>
+                            View Registration Form
+                        </a>
+                        {% endif %}
+                        <button onclick="copyEventLink()" class="btn btn-outline">
+                            <i class="fas fa-link mr-2"></i>
+                            Copy Event Link
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Quick Actions (for dashboard integration) -->
+                <div class="bg-white rounded-lg shadow p-6 mt-6">
+                    <h3 class="text-lg font-semibold mb-4">Quick Actions</h3>
+                    <div class="flex items-center justify-between">
+                        <div class="flex gap-2">
+                            <a href="{{ url_for('edit_event', event_id=event.id) }}" class="btn btn-sm btn-outline">
+                                <i class="fas fa-edit mr-1"></i>
+                                Edit
+                            </a>
+                            <a href="{{ url_for('manage_registrations', event_id=event.id) }}" class="btn btn-sm btn-primary">
+                                <i class="fas fa-cog mr-1"></i>
+                                Manage
+                            </a>
+                        </div>
+                        <span class="text-xs text-muted">
+                            <i class="fas fa-users"></i> {{ event.registrations_count or 0 }}
+                        </span>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+function copyEventLink() {
+    const eventUrl = "{{ url_for('view_event', event_id=event.id, _external=True) }}";
+    navigator.clipboard.writeText(eventUrl).then(function() {
+        // Show success message
+        const btn = event.target.closest('button');
+        const originalText = btn.innerHTML;
+        btn.innerHTML = '<i class="fas fa-check mr-2"></i>Copied!';
+        btn.classList.add('btn-success');
+        setTimeout(() => {
+            btn.innerHTML = originalText;
+            btn.classList.remove('btn-success');
+        }, 2000);
+    }).catch(function(err) {
+        console.error('Could not copy text: ', err);
+        alert('Failed to copy link');
+    });
+}
+</script>
 {% endblock %}

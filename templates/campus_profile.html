@@ -33,12 +33,7 @@
                         <span>Add Event</span>
                     </a>
                 </li>
-                <li class="sidebar-item">
-                    <a href="{{ url_for('search') }}?type=all" class="sidebar-link">
-                        <i class="fas fa-search"></i>
-                        <span>Explore</span>
-                    </a>
-                </li>
+                
                 <li class="sidebar-item">
                     <a href="#" class="sidebar-link">
                         <i class="fas fa-bell"></i>
@@ -70,25 +65,151 @@
             </div>
             
             <div class="flex items-center gap-2">
-                <a href="{{ url_for('edit_campus_profile') }}" class="btn btn-outline">
-                    <i class="fas fa-edit mr-2"></i>
-                    Edit Profile
+                <a href="javascript:history.back()" class="btn btn-outline">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back
                 </a>
             </div>
         </header>
 
-        <!-- Profile content -->
+        <!-- Campus Profile content -->
         <div class="p-4 lg:p-6">
             <div class="max-w-4xl mx-auto">
-                <!-- Profile header with cover and logo -->
+                <!-- Campus header -->
                 <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
                     <div class="h-48 bg-primary-light/30 relative">
                         <img 
-                            src="https://images.unsplash.com/photo-1498243691581-b145c3f54a5a?q=80&w=2000&auto=format&fit=crop"
+                            src="https://images.unsplash.com/photo-1607237138185-eedd9c632b0b?q=80&w=2000&auto=format&fit=crop"
                             alt="Cover"
                             class="w-full h-full object-cover"
                         >
-                        <a href="{{ url_for('edit_campus_profile') }}" class="btn-icon btn-secondary absolute top-4 right-4 bg-white/80 hover:bg-white">
-                            <i class="fas fa-edit"></i>
-                        </a>
                     </div>
+                    <div class="p-6 flex flex-col md:flex-row gap-6 items-center md:items-start ">
+                        <div class="w-32 h-32 rounded border-4 border-white overflow-hidden bg-white shadow">
+                            {% if campus.profile_image %}
+                                    <img src="{{ url_for('static', filename=campus.profile_image) }}?t={{ now }}" alt="{{ campus.name }}" class="w-full h-full object-cover">
+                                {% else %}
+                                    <div class="w-full h-full flex items-center justify-center bg-gray-200">
+                                        <i class="fas fa-university text-gray-400 text-4xl"></i>
+                                    </div>
+                                {% endif %}
+                        </div>
+                        <div class="text-center md:text-left mt-2 md:mt-10">
+                            <h2 class="text-2xl font-bold">{{ campus.name }}</h2>
+                            <p class="text-muted">{{ campus.location }}</p>
+                            <div class="flex flex-wrap gap-4 mt-2">
+                                {% if campus.website %}
+                                <a href="{{ campus.website }}" target="_blank" class="flex items-center gap-2 text-primary-orange hover:underline">
+                                    <i class="fas fa-globe"></i>
+                                    <span>Website</span>
+                                </a>
+                                {% endif %}
+                                <div class="flex items-center gap-2 text-muted">
+                                    <i class="fas fa-calendar"></i>
+                                    <span>Est. {{ campus.founded_year or 'N/A' }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4 md:mt-10 md:ml-auto">
+                            <button class="btn btn-outline">
+                                <i class="fas fa-star mr-2"></i>
+                                Follow
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Campus sections using tabs -->
+                <div class="bg-white rounded-lg shadow overflow-hidden mb-6">
+                    <div class="border-b">
+                        <div class="flex overflow-x-auto">
+                            <button class="px-6 py-3 font-medium border-b-2 border-primary-orange">About</button>
+                            <button class="px-6 py-3 text-muted hover:text-black">Events</button>
+                            <button class="px-6 py-3 text-muted hover:text-black">Photos</button>
+                        </div>
+                    </div>
+
+                    <div class="p-6">
+                        <div class="space-y-8">
+                            <!-- About section -->
+                            <div>
+                                <h3 class="text-lg font-medium mb-4">About {{ campus.name }}</h3>
+                                <p class="text-gray-600">
+                                    {{ campus.description }}
+                                </p>
+                            </div>
+
+                            <!-- Events section -->
+                            <div class="mb-8">
+                                <div class="flex items-center justify-between mb-6">
+                                    <h3 class="text-xl font-light text-gray-800">Upcoming Events</h3>
+                                    <a href="#" class="text-sm text-orange-500 hover:text-orange-600 transition-colors">View All</a>
+                                </div>
+                                
+                                {% if events %}
+                                    <div class="space-y-4">
+                                        {% for event in events[:4] %}
+                                            <div class="group bg-white rounded-lg overflow-hidden shadow-sm border border-gray-200 hover:shadow-md transition-all duration-300 h-32 flex">
+                                                <!-- Banner Image Section -->
+                                                <div class="w-64 h-full relative overflow-hidden bg-gradient-to-r from-blue-500 to-purple-600 flex-shrink-0">
+                                                    {% if event.image %}
+                                                        <img src="{{ url_for('static', filename=event.image) }}" alt="{{ event.title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                                                    {% else %}
+                                                        <div class="w-full h-full bg-gradient-to-br from-green-400 via-blue-500 to-purple-600 flex items-center justify-center">
+                                                            <svg class="w-12 h-12 text-white/80" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                                            </svg>
+                                                        </div>
+                                                    {% endif %}
+                                                    
+                                                    <!-- Event Details Overlay at Bottom -->
+                                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-4">
+                                                        <h4 class="text-white font-semibold text-lg mb-1 truncate">{{ event.title }}</h4>
+                                                        <p class="text-white/90 text-sm">{{ event.date.strftime('%b %d, %Y') }}</p>
+                                                    </div>
+                                                </div>
+                                                
+                                                <!-- Right Side Content -->
+                                                <div class="flex-1 p-4 flex flex-col justify-between bg-white">
+                                                    <div>
+                                                        <h4 class="font-semibold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors">
+                                                            {{ event.title }}
+                                                        </h4>
+                                                        
+                                                        {% if event.description %}
+                                                        <p class="text-gray-600 text-sm leading-relaxed line-clamp-2 mb-3">
+                                                            {{ event.description }}
+                                                        </p>
+                                                        {% endif %}
+                                                    </div>
+                                                    
+                                                    <div class="flex items-center justify-between">
+                                                        <div class="text-sm text-gray-500">
+                                                            {{ event.date.strftime('%B %d, %Y') }}
+                                                        </div>
+                                                        <a href="{{ url_for('view_event', event_id=event.id) }}" 
+                                                        class="text-sm text-orange-500 hover:text-orange-600 font-medium transition-colors">
+                                                            View Details
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% else %}
+                                    <div class="text-center py-12 bg-gray-50/50 rounded-lg border border-gray-200">
+                                        <svg class="w-10 h-10 text-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+                                        </svg>
+                                        <p class="text-gray-500">No upcoming events at this time</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

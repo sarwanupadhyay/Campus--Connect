@@ -44,7 +44,7 @@ def save_profile_image(file):
         file_path = os.path.join(save_path, filename)
         file.save(file_path)
 
-        return f"uploads/profiles/{filename}"  # ⬅️ Relative path inside static
+        return f"uploads/profiles/{filename}"  # Relative path inside static
     return None
 
 
@@ -53,29 +53,49 @@ def save_event_image(file):
         filename = secure_filename(file.filename)
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = f"{timestamp}_{filename}"
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'events', filename)
+        
+        # Make sure images go inside /static/uploads/events
+        save_path = os.path.join('static', 'uploads', 'events')
+        os.makedirs(save_path, exist_ok=True)
+        
+        file_path = os.path.join(save_path, filename)
         file.save(file_path)
-        return os.path.join('uploads', 'events', filename)
+
+        return f"uploads/events/{filename}"  # Relative path inside static
     return None
+
 
 def save_campus_image(file):
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = f"{timestamp}_{filename}"
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'campus', filename)
+        
+        # Make sure images go inside /static/uploads/campus
+        save_path = os.path.join('static', 'uploads', 'campus')
+        os.makedirs(save_path, exist_ok=True)
+        
+        file_path = os.path.join(save_path, filename)
         file.save(file_path)
-        return os.path.join('uploads', 'campus', filename)
+
+        return f"uploads/campus/{filename}"  # Relative path inside static
     return None
+
 
 def save_project_file(file):
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
         filename = f"{timestamp}_{filename}"
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], 'projects', filename)
+        
+        # Make sure files go inside /static/uploads/projects
+        save_path = os.path.join('static', 'uploads', 'projects')
+        os.makedirs(save_path, exist_ok=True)
+        
+        file_path = os.path.join(save_path, filename)
         file.save(file_path)
-        return os.path.join('uploads', 'projects', filename)
+
+        return f"uploads/projects/{filename}"  # Relative path inside static
     return None
 
 # Routes
@@ -203,7 +223,6 @@ def profile_setup():
             campus.website = request.form.get('website')
             campus.founded_year = request.form.get('founded_year')
             
-            
             # Handle profile image
             if 'profile_image' in request.files:
                 file = request.files['profile_image']
@@ -301,8 +320,8 @@ def campus_profile():
     if not campus or not campus.name:
         flash('Please complete your campus profile first.')
         return redirect(url_for('profile_setup'))
-    
-    return render_template('campus_profile.html', campus=campus, user=user, events=events)
+    now = datetime.now().timestamp()
+    return render_template('campus_profile.html', campus=campus, user=user, events=events, now=now)
 
 @app.route('/student-dashboard')
 def student_dashboard():
@@ -410,6 +429,7 @@ def add_event():
         event_type = request.form.get('event_type')
         date_str = request.form.get('date')
         location = request.form.get('location')
+        form_url = request.form.get('form_url')
         
         # Convert date string to datetime
         try:
@@ -425,7 +445,8 @@ def add_event():
             event_type=event_type,
             date=date,
             location=location,
-            status='upcoming'
+            status='upcoming',
+            form_url=form_url
         )
         
         # Handle event image
@@ -441,7 +462,19 @@ def add_event():
         flash('Event added successfully!')
         return redirect(url_for('campus_dashboard'))
     
-    return render_template('add_event.html')
+    # For GET requests, create an empty event object or pass None
+    # Option 1: Create empty event object
+    empty_event = {
+        'title': '',
+        'description': '',
+        'event_type': '',
+        'location': '',
+        'form_url': '',
+        'date': '',
+        'status': 'upcoming'
+    }
+    
+    return render_template('add_event.html', event=empty_event)
 
 @app.route('/campus-dashboard/event/<int:event_id>/edit', methods=['GET', 'POST'])
 def edit_event(event_id):
@@ -458,36 +491,79 @@ def edit_event(event_id):
         return redirect(url_for('campus_dashboard'))
     
     if request.method == 'POST':
-        event.title = request.form.get('title')
-        event.description = request.form.get('description')
-        event.event_type = request.form.get('event_type')
-        event.location = request.form.get('location')
-        event.status = request.form.get('status')
+        # Get form data
+        title = request.form.get('title')
+        description = request.form.get('description')
+        event_type = request.form.get('event_type')
+        location = request.form.get('location')
+        status = request.form.get('status')
+        form_url = request.form.get('form_url')
+        date_str = request.form.get('date')
+        
+        # Validate required fields
+        if not all([title, description, event_type, location, status, date_str]):
+            flash('Please fill in all required fields.')
+            return render_template('edit_event.html', event=event)
         
         # Convert date string to datetime
-        date_str = request.form.get('date')
         try:
-            event.date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
+            date = datetime.strptime(date_str, '%Y-%m-%dT%H:%M')
         except ValueError:
-            flash('Invalid date format.')
-            return redirect(url_for('edit_event', event_id=event_id))
+            flash('Invalid date format. Please check the date and time.')
+            return render_template('edit_event.html', event=event)
         
-        # Handle event image
-        if 'image' in request.files:
-            file = request.files['image']
-            image_path = save_event_image(file)
-            if image_path:
-                event.image = image_path
-        
-        db.session.commit()
-        flash('Event updated successfully!')
-        return redirect(url_for('campus_dashboard'))
+        try:
+            # Update event fields
+            event.title = title.strip()
+            event.description = description.strip()
+            event.event_type = event_type
+            event.location = location.strip()
+            event.status = status
+            event.date = date
+            event.form_url = form_url.strip() if form_url else None
+            
+            # Handle event image
+            if 'image' in request.files:
+                file = request.files['image']
+                if file and file.filename:
+                    image_path = save_event_image(file)
+                    if image_path:
+                        # Delete old image if it exists
+                        if event.image:
+                            try:
+                                import os
+                                old_image_path = os.path.join(app.static_folder, event.image)
+                                if os.path.exists(old_image_path):
+                                    os.remove(old_image_path)
+                            except Exception as e:
+                                print(f"Error deleting old image: {e}")
+                        
+                        event.image = image_path
+            
+            db.session.commit()
+            flash('Event updated successfully!')
+            return redirect(url_for('campus_dashboard'))
+            
+        except Exception as e:
+            db.session.rollback()
+            flash('An error occurred while updating the event. Please try again.')
+            print(f"Error updating event: {e}")
+            return render_template('edit_event.html', event=event)
     
-    # Format the date for the datetime-local input
-    event.formatted_date = event.date.strftime('%Y-%m-%dT%H:%M')
+    # For GET requests, format the date for the datetime-local input
+    if hasattr(event, 'date') and event.date:
+        event.formatted_date = event.date.strftime('%Y-%m-%dT%H:%M')
+    else:
+        event.formatted_date = ''
+    
+    # Ensure form_url exists (for backward compatibility)
+    if not hasattr(event, 'form_url'):
+        event.form_url = None
     
     return render_template('edit_event.html', event=event)
 
+
+# Also add the delete_event route if you don't have it already
 @app.route('/campus-dashboard/event/<int:event_id>/delete', methods=['POST'])
 def delete_event(event_id):
     if 'user_id' not in session or session['role'] != 'campus':
@@ -502,11 +578,34 @@ def delete_event(event_id):
         flash('You do not have permission to delete this event.')
         return redirect(url_for('campus_dashboard'))
     
-    db.session.delete(event)
-    db.session.commit()
+    try:
+        # Delete event image if it exists
+        if event.image:
+            try:
+                import os
+                image_path = os.path.join(app.static_folder, event.image)
+                if os.path.exists(image_path):
+                    os.remove(image_path)
+            except Exception as e:
+                print(f"Error deleting event image: {e}")
+        
+        # Delete the event
+        db.session.delete(event)
+        db.session.commit()
+        
+        flash('Event deleted successfully!')
+        
+    except Exception as e:
+        db.session.rollback()
+        flash('An error occurred while deleting the event.')
+        print(f"Error deleting event: {e}")
     
-    flash('Event deleted successfully!')
     return redirect(url_for('campus_dashboard'))
+
+@app.route('/manage_registrations/<int:event_id>')
+def manage_registrations(event_id):
+    # Handle registration management
+    pass
 
 @app.route('/campus/<int:campus_id>')
 def view_campus(campus_id):
